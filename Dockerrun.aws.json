@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name":"client",
+            "image":"sparikh3/multi-client",
+            "hostname": "client",
+            "essential": false
+        },
+        {
+            "name":"server",
+            "image":"sparikh3/multi-server",
+            "hostname": "api",
+            "essential": false
+        },
+        {
+            "name":"nginx",
+            "image":"sparikh3/multi-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings":[
+                {
+                    "hostPort": 80,
+                    "containerPort":80
+                }
+            ],
+            "links": ["client","server"] 
+        },
+        {
+            "name":"worker",
+            "image":"sparikh3/multi-worker",
+            "hostname": "worker",
+            "essential": false
+        }
+    ]
+}
