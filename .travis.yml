@@ -1,0 +1,24 @@
+sudo : required
+servies:
+  - docker
+
+before_install:
+  - docker build -t sparikh3/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true sparikh3/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t sparikh3/multi-client ./client
+  - docker build -t sparikh3/multi-nginx ./nginx
+  - docker build -t sparikh3/multi-server ./server
+  - docker build -t sparikh3/multi-worker ./worker
+  # login to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # push this images to docker hub
+  - docker push sparikh3/multi-client
+  - docker push sparikh3/multi-server
+  - docker push sparikh3/multi-worker
+  - docker push sparikh3/multi-nginx
+
+
